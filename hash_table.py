@@ -44,16 +44,19 @@ class HashTable:
         new_contact=Contact(key, number)
         new_node=Node(key, new_contact)
         current=self.data[index]
+        # If the slot is empty
         if current is None:
             self.data[index]=new_node
             return
+        # Traverse linked list for collision or update
         prev=None
         while current:
-            if current.key==key: 
+            if current.key==key:  # update existing contact
                 current.value=new_contact
                 return
             prev=current
             current=current.next
+        # Add at end of chain
         prev.next=new_node
     def search(self, key):
         index=self.hash_function(key)
@@ -74,36 +77,23 @@ class HashTable:
                     print(f"- {current.value}", end=" ")
                     current=current.next
                 print()
+# Test your hash table implementation here.
 if __name__=="__main__":
     table=HashTable(10)
     table.print_table()
-    print("\n--- Adding Contacts ---")
+    print("\nAdding Contacts")
     table.insert("John", "909-876-1234")
     table.insert("Rebecca", "111-555-0002")
     table.print_table()
-    print("\n--- Search ---")
+    print("\nSearch")
     contact = table.search("John")
     print("Search result:", contact)
-    print("\n--- Collision Handling ---")
+    print("\nCollision Handling")
     table.insert("Amy", "111-222-3333")
     table.insert("May", "222-333-1111")
     table.print_table()
-    print("\n--- Update Duplicate Key ---")
+    print("\nUpdate Duplicate Key")
     table.insert("Rebecca", "999-444-9999")
     table.print_table()
-    print("\n--- Search for Missing Contact ---")
+    print("\nSearch for Missing Contact")
     print(table.search("Chris"))
-"""
-A hash table is ideal for storing contacts because it provides constant-time lookups using unique keys. 
-Unlike lists, which require scanning through every element, a hash table uses a hash function to compute exactly where a contact should be stored. 
-This allows for instant access, even when the dataset becomes large.
-
-In this program, the hash function adds the Unicode values of all characters in a contact’s name and takes the remainder when divided by the table size. 
-This determines each contact’s position in the array. 
-Collisions, when two names map to the same index, are handled with separate chaining, where each index can store a linked list of nodes.
-This ensures no data is lost. If a contact with the same name is inserted, the number is updated instead of just creating a duplicate.
-
-An engineer would choose a hash table over a list or tree when speed matters more than order. 
-According to best practices, hash tables trade a little extra memory for much faster access, 
-making them perfect for quick lookups and updates in small-memory environments.
-"""
